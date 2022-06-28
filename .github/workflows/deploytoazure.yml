@@ -1,15 +1,15 @@
-name: Deploy to Azure App Service
+name: 'Deploy to Azure App Service'
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ master ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ master ]
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: '.'
   AZURE_WEBAPP_NAME: PrimeDeployDemo
-  
+
 jobs:
   build:
 
@@ -18,11 +18,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Set up .NET Core
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0.x'
-        include-prerelease: true
+        dotnet-version: 6.0.x
         
     - name: Restore dependencies
       run: dotnet restore
@@ -31,7 +30,7 @@ jobs:
       run: dotnet build --configuration Release
       
     - name: Publish
-      run: dotnet publish -c Release -o ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp
+      run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
       
     - name: Deploy
       uses: Azure/webapps-deploy@v2
@@ -39,4 +38,4 @@ jobs:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         slot-name: 'development'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
